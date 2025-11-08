@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国市集地区微信群聊 - 付费入群</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a6dff 0%, #0d47a1 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #1a6dff;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .region-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .region-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border-left: 4px solid #1a6dff;
+        }
+        
+        .region-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .region-item h3 {
+            color: #1a6dff;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .region-item p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ff5722;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #1a6dff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: #0d47a1;
+        }
+        
+        .btn-pay {
+            background: #ff5722;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-pay:hover {
+            background: #e64a19;
+        }
+        
+        .payment-section {
+            max-width: 500px;
+            margin: 40px auto;
+            display: none;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .payment-method {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method.selected {
+            border-color: #1a6dff;
+            background-color: #f0f7ff;
+        }
+        
+        .payment-method img {
+            height: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .success-message h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+        
+        .qrcode {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .region-list {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>全国市集地区微信群聊</h1>
+            <p>加入专属地区群聊，与同城好友交流互动</p >
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>群聊介绍</h2>
+            <p>我们为全国各个市集地区创建了专属的微信群聊，方便同城用户交流分享。每个群聊都有专属的管理员维护，确保良好的交流环境。加入群聊需要支付少量费用，用于群维护和内容管理。</p >
+        </div>
+        
+        <div class="card">
+            <h2>选择您要加入的地区群聊</h2>
+            <div class="region-list">
+                <div class="region-item">
+                    <h3>北京地区群</h3>
+                    <p>北京及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="北京" data-price="9.9">加入群聊</button>
+                </div>
+                
+                <div class="region-item">
+                    <h3>上海地区群</h3>
+                    <p>上海及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="上海" data-price="9.9">加入群聊</button>
+                </div>
+                
+                <div class="region-item">
+                    <h3>广州地区群</h3>
+                    <p>广州及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="广州" data-price="9.9">加入群聊</button>
+                </div>
+                
+                <div class="region-item">
+                    <h3>深圳地区群</h3>
+                    <p>深圳及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="深圳" data-price="9.9">加入群聊</button>
+                </div>
+                
+                <div class="region-item">
+                    <h3>成都地区群</h3>
+                    <p>成都及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="成都" data-price="9.9">加入群聊</button>
+                </div>
+                
+                <div class="region-item">
+                    <h3>杭州地区群</h3>
+                    <p>杭州及周边地区用户交流群</p >
+                    <div class="price">￥9.9</div>
+                    <button class="btn join-btn" data-region="杭州" data-price="9.9">加入群聊</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card payment-section" id="paymentSection">
+            <h2>支付入群费用</h2>
+            <p>您选择的群聊：<span id="selectedRegion">北京地区群</span></p >
+            <p>支付金额：<span id="selectedPrice" class="price">￥9.9</span></p >
+            
+            <div class="form-group">
+                <label for="name">您的姓名</label>
+                <input type="text" id="name" placeholder="请输入您的姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">手机号码</label>
+                <input type="tel" id="phone" placeholder="请输入您的手机号码">
+            </div>
+            
+            <div class="form-group">
+                <label for="wechat">微信号</label>
+                <input type="text" id="wechat" placeholder="请输入您的微信号">
+            </div>
+            
+            <div class="form-group">
+                <label>选择支付方式</label>
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="wechat">
+                        <div>微信支付</div>
+                    </div>
+                    <div class="payment-method" data-method="alipay">
+                        <div>支付宝</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-pay" id="payBtn">立即支付</button>
+        </div>
+        
+        <div class="card success-message" id="successMessage">
+            <h2>支付成功！</h2>
+            <p>您已成功加入 <span id="joinedRegion">北京地区群</span></p >
+            <p>请添加管理员微信，我们将拉您入群</p >
+            <div class="qrcode">
+                管理员微信二维码
+            </div>
+            <p>添加时请备注：已支付入群</p >
+            <button class="btn" id="backBtn" style="margin-top: 20px;">返回首页</button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>全国市集地区微信群聊 &copy; 2023 版权所有</p >
+            <p>客服微信：marketgroup | 客服电话：400-123-4567</p >
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const joinButtons = document.querySelectorAll('.join-btn');
+            const paymentSection = document.getElementById('paymentSection');
+            const successMessage = document.getElementById('successMessage');
+            const selectedRegion = document.getElementById('selectedRegion');
+            const selectedPrice = document.getElementById('selectedPrice');
+            const joinedRegion = document.getElementById('joinedRegion');
+            const payBtn = document.getElementById('payBtn');
+            const backBtn = document.getElementById('backBtn');
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            
+            let currentRegion = '';
+            let currentPrice = '';
+            let paymentMethod = 'wechat';
+            
+            // 选择地区群聊
+            joinButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    currentRegion = this.getAttribute('data-region');
+                    currentPrice = this.getAttribute('data-price');
+                    
+                    selectedRegion.textContent = currentRegion + '地区群';
+                    selectedPrice.textContent = '￥' + currentPrice;
+                    joinedRegion.textContent = currentRegion + '地区群';
+                    
+                    paymentSection.style.display = 'block';
+                    paymentSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // 选择支付方式
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    paymentMethods.forEach(m => m.classList.remove('selected'));
+                    this.classList.add('selected');
+                    paymentMethod = this.getAttribute('data-method');
+                });
+            });
+            
+            // 支付按钮点击
+            payBtn.addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const wechat = document.getElementById('wechat').value;
+                
+                if (!name || !phone || !wechat) {
+                    alert('请填写完整信息');
+                    return;
+                }
+                
+                // 模拟支付过程
+                payBtn.textContent = '支付中...';
+                payBtn.disabled = true;
+                
+                // 这里应该调用实际的支付接口
+                // 使用您提供的支付服务端口和PID/KEY
+                // 由于安全原因，实际支付请求应该在后端完成
+                
+                setTimeout(function() {
+                    // 模拟支付成功
+                    paymentSection.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                }, 2000);
+            });
+            
+            // 返回首页
+            backBtn.addEventListener('click', function() {
+                successMessage.style.display = 'none';
+                paymentSection.style.display = 'none';
+                
+                // 重置表单
+                document.getElementById('name').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('wechat').value = '';
+                
+                payBtn.textContent = '立即支付';
+                payBtn.disabled = false;
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
